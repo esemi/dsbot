@@ -1,0 +1,517 @@
+/**********************************************************************************************
+
+    Title: CSS
+    Author:
+    Date: 2012
+
+***********************************************************************************************
+    1. Global Reset
+    2. General Elements
+    3. Generic Classes
+    4. Layout
+            4.1 Main Menu
+    5.Pages
+            5.1 Main
+            5.2 News
+            5.3 About
+            5.4 Contacts
+            5.5 About World
+***********************************************************************************************/
+
+/* 1. Global Reset
+-----------------------------------------------------------------------------------------------*/
+
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure,
+    footer, header, hgroup, menu, nav, section {
+            display: block;
+    }
+  /*  body {
+            line-height: 1;
+    }*/
+    a{
+        outline: none;
+    }
+    ol, ul {
+            list-style: none;
+    }
+    blockquote, q {
+            quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+            content: '';
+            content: none;
+    }
+    table {
+            border-collapse: collapse;
+            border-spacing: 0;
+    }
+    caption, th, td {
+		text-align: left;
+		font-weight: normal;
+	}
+    h1, h2, h3, h4, h5, h6 {
+		font-weight:normal;
+	}
+/*End 1. Global Reset*/
+
+.debug {
+  outline: 1px solid red;
+  background: #84a8cb;
+}
+
+/* 2. General Elements
+-----------------------------------------------------------------------------------------------*/
+    html {
+    width: 100%;
+    height:100%;
+    background: url('/img/bg.png') top center repeat-y #5c6972;
+    font: 14px/1.5 Arial,Helvetica,sans-serif;
+    color:#36405b;
+}
+
+    noscript, .alert{
+            color: #e90000;
+            text-align: center;
+        }
+    a{
+        color:#1e7494;
+        text-decoration:underline;
+    }
+    a:hover, a:active{
+        color:#1e7494;
+        text-decoration:none;
+    }
+    p{
+        margin: 5px 0px 13px;
+    }
+    acronym{
+        border-bottom:1px dashed #6e0022;
+    }
+    strong{
+        font-weight: bold;
+    }
+    em{
+        font-style: italic;
+    }
+    pre{
+        font-family: monospace;
+}
+
+    h1{
+        color: #1e7494;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 11px;
+        margin-top: 4px;
+    }
+/*End 2. General Elements*/
+
+/* 3. Generic Classes
+-----------------------------------------------------------------------------------------------*/
+    .clearfix {
+        zoom: 1;
+    }
+    .clearfix:after {
+    content: ' ';
+    clear:both;
+    display: block;
+    width: 0; height: 0;
+    overflow: hidden;
+    font-size: 0;
+    }
+
+    .emph{
+     color: #1e7494;
+    }
+
+    .message-block{
+        position: absolute;
+        top:11px;
+        left: 191px;
+    }
+    .error{
+        color:#ad0039;
+    }
+    .success{
+        color: #007f42;
+    }
+    .warning{
+         color:#ad0039;
+         font-weight: bold;
+    }
+	.wait{
+        color: #a5a5a5;
+	}
+
+
+    .left{
+        float: left;
+    }
+    .right{
+        float: right;
+    }
+    .clear{
+        clear: both;
+    }
+
+    .just-text p{
+        text-align: justify;
+    }
+    /* Tables
+    ----------------------------------------*/
+    table{
+        max-width: 584px;
+
+    }
+    table th{
+        font-weight: bold;
+    }
+    table td,table thead th{
+        padding: 9px;
+    }
+
+    table .data{
+        width: 135px;
+    }
+
+    .even, table thead{
+        background: #d5d5d5;
+    }
+    .odd{
+        background: #e9e7e7;
+    }
+    /* END Tables ----------------------------*/
+
+     /* label with input by side
+    ----------------------------------------*/
+    .inline-look{
+        display: inline-block;
+        vertical-align: bottom;
+        margin-right: 13px;
+    }
+    .inline-look td{
+        padding: 3px 0px;
+    }
+    .inline-look input{
+        width:155px;
+        margin-left: 5px;
+    }
+    /* END label with input by side
+    ----------------------------------------*/
+
+    .hide{
+        display: none;
+    }
+
+    .pass-form{
+        width: 186px;
+        margin-bottom: 12px;
+        margin-right: 21px;
+    }
+
+    .delete{
+        background: url('/img/sprite.png') -12px 0px no-repeat;
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
+        display: block;
+    }
+    .delete:hover, #change-sots-buttons .delete{
+        background: url('/img/sprite.png') 0px 0px no-repeat;
+    }
+    .ok{
+        background: url('/img/sprite.png') 0px -12px no-repeat;
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
+        display: block;
+    }
+
+    .relative{
+        position: relative;
+    }
+
+/*End 3. Generic Classes*/
+
+/* 4. LAYOUT
+-----------------------------------------------------------------------------------------------*/
+    #content{
+        width:893px;
+        margin: 0px auto;
+        padding: 40px 33px;
+        background: url('/img/fon.png') bottom right no-repeat #dcdcdc;
+        box-shadow: 1px 1px 5px 0px #2b3844;
+        border-bottom: 3px solid #4a4c52;
+        border-top: 2px solid #ffffff;
+        border-radius: 0px 0px 7px 7px;
+        min-height: 373px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /*hack for stricky Footer by Ryan Fait*/
+        #for-footer-1{
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0px auto -103px;
+        }
+        #for-footer-2{
+            height:103px;
+        }
+
+    #header{
+        margin: 0px auto;
+        line-height: normal;
+        width: 960px;
+      /*  height: 174px;*/
+    }
+    #logo{
+        margin-top: 30px;
+        float: left;
+    }
+    #describe{
+        color: #949ca2;
+        font-weight: bold;
+        font-size: 20px;
+        float: left;
+        margin: 59px 0px 0px 49px;
+
+    }
+
+    #footer{
+        color:#949ca2;
+        text-align: center;
+        width:893px;
+        margin: 6px auto;
+    }
+    #footer span{
+        margin-left: 21px;
+    }
+
+    #reg{
+        float: right;
+        background-color: #5c6972;
+        width: 169px;
+        height: 57px;
+        border-radius: 3px;
+        margin-top: 30px;
+        box-shadow: -1px -1px 1px 0px #2b3844;
+        text-align: center;
+        position: relative;
+        padding: 5px;
+    }
+    #reg p{
+        margin: 7px 0px;
+    }
+    #reg a{
+        color: #dcdcdc;
+        text-decoration: none;
+    }
+    #reg a:hover{
+        color: #9ad7d8;
+    }
+
+    /* 4.1 Main Menu
+-----------------------------------------------------------------------------------------------*/
+    #menus-block{
+        clear: both;
+    }
+    #header #main-menu{
+       display: inline-block;
+    }
+    #header #main-menu a,  #header #personal-menu a{
+        display: inline-block;
+        width: 171px;
+        height: 25px;
+        padding-top: 8px;
+        margin: 17px 21px 0px 0px;
+        background-color: #e3e3e3;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        color: #5c6972;
+        zoom: 1;
+        border-radius: 2px 2px 0px 0px;
+        box-shadow: 1px 1px 5px 0px #2b3844;
+        position: relative;
+        z-index: 1;
+    }
+    #header #personal-menu{
+       display: inline-block;
+       float: right;
+    }
+    #header #personal-menu a{
+        width: 125px;
+        margin: 17px 0px 0px 12px;
+    }
+    #header #main-menu a:hover, #header #main-menu a:active, #header #personal-menu a:hover, #header #personal-menu a:active, .selected-label{
+        background: #5c6972 !important;
+        color:#e3e3e3 !important;
+
+    }
+    /* END 4.1 Main Menu----------------------------------------------------------------------------*/
+
+/*End 4. LAYOUT*/
+
+/* 5. PAGES
+-----------------------------------------------------------------------------------------------*/
+    /* 5.1 Main
+    ----------------------------------------*/
+    .text-block{
+        width: 526px;
+        margin-right: 33px;
+        text-align: justify;
+    }
+    /* END 5.1 Main-----------------------------*/
+
+    /* 5.2 FAQ
+    ----------------------------------------*/
+    .quest {
+        font-weight: bold;
+        margin: 13px 0px 7px !important;
+    }
+    .faq-letter{
+        color: #1e7494;
+        font-weight: bold;
+    }
+    .small-p p{
+        margin: 3px 0px 3px;
+    }
+    .faq-table{
+        max-width: 80%;
+    }
+    .faq-table th, .faq-table td{
+        text-align: center;
+    }
+    .faq-table thead{
+        background: none;
+    }
+    .faq-table .long-block{
+        text-align: justify;
+        width: 80%;
+    }
+    /* END 5.2 FAQ  --------------------------*/
+
+    /* 5.3 Player
+    ----------------------------------------*/
+    #user-comands{
+        margin-top: 33px;
+    }
+    #user-comands a{
+        display: block;
+        margin-top: 5px;
+    }
+
+    #player-main{
+        float:left;
+    }
+    #player{
+        width: 600px;
+        float: right;
+    }
+
+    #start-url{
+        max-width: 191px;
+    }
+
+    #player-block{
+        background: #d5d5d5;
+        display: inline-block;
+        min-width: 245px;
+        min-height: 153px;
+        margin-left: 21px;
+        margin-bottom: 21px;
+        border-radius: 1px;
+        padding: 15px;
+        position: relative;
+    }
+    #player-block .emph, #player-main .emph{
+        font-weight: bold;
+        margin-right: 3px;
+    }
+    #player-block p{
+        margin: 3px 0px;
+    }
+    #player-block .textarea{
+        width: 200px;
+        height: 47px;
+        border: none;
+    }
+
+    #soty{
+        float: left;
+        margin-right: 3px !important;
+    }
+    #delete-player{
+        position: absolute;
+        right: 16px;
+        top: 15px;
+    }
+
+    #change-sots-buttons{
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+    #change-sots-buttons .ok{
+        margin-top: 23px;
+    }
+
+
+     /* END 5.3 Player --------------------------*/
+
+   /* 5.4 Add player
+    ----------------------------------------*/
+   #add-player-pref{
+       text-align: left;
+       margin-left: 12px;
+       float: left;
+   }
+   #add-player-textarea{
+       clear: both;
+       min-width: 224px;
+   }
+  /* END 5.4 Add player --------------------------*/
+
+
+/*#b00137 dark red, as logo
+#6e0022 brown, main font
+#ff6f00 special orange, voran
+#136100 special green, liens
+#050094 special blue, psol
+#7f881d green
+#e90000 red
+#e3e3e3 light gray, main menu
+#d4d4d4 gray for map
+#a5a5a5 gray
+#fbebef pale pink, used for tables
+#fef3e9 pale yellow, used for tables
+
+#adb9dd pale blue, for map
+#c2cdad pale green, for map
+#fed7bd pale orange, for map
+
+*/

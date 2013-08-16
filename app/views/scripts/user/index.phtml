@@ -1,0 +1,127 @@
+<div id="player-main">
+
+<?php $this->printMessageBlock($this->messType, $this->messText); ?>
+
+<h1>Основная информация</h1>
+	<span class="emph">Телефон:</span> <?php echo $this->escape($this->user->phone); ?><br/>
+	<span class="emph">Email:</span> <?php echo $this->escape($this->user->email); ?><br/>
+	<span class="emph">Прокси оплачен до:</span>
+	<span class="<?php if($this->proxyWarn) echo 'warning'; ?>"><?php echo $this->escape($this->user->proxy_expired); ?></span>
+	<?php if($this->proxyWarn): ?>
+		<a href="<?php echo $this->url(array(),'staticManually',true); ?>">продлить</a>
+	<?php endif; ?>
+	<br/>
+	<span class="emph">Баланс:</span>
+	<span class="<?php if($this->balanceWarn) echo 'warning'; ?>"><?php printf('%.2f руб.', $this->user->balance); ?></span>
+	<a href="<?php echo $this->url(array(),'staticManually',true); ?>">пополнить</a>
+
+	<br/>
+
+	<span class="emph">Start url:</span>
+	<?php $disabled = ( $this->edited && $this->avaliableSms ) ? '' : 'disabled="disabled"'; ?>
+	<select id="start-url" class="js-change-url" <?php echo $disabled; ?>>
+	<?php
+	foreach( $this->startPages as $page)
+	{
+		$selected = ($page['url'] === $this->user->start_url) ? 'selected="selected"' : '';
+		printf('<option value="%s" %s>%s</option>', $page['id'], $selected, $page['url']);
+	}
+	?>
+	</select>
+
+	<br/>
+
+	<span class="emph">Notification type:</span>
+	<?php $disabled = ( $this->edited && $this->avaliableSms ) ? '' : 'disabled="disabled"'; ?>
+	<select id="notify-type" class="js-change-notify-type" <?php echo $disabled; ?> >
+	<?php
+	$avaliableTypes = array('email', 'sms');
+	foreach( $avaliableTypes as $type)
+	{
+		$selected = ($type === $this->user->notify_type) ? 'selected="selected"' : '';
+		printf('<option value="%s" %s>%s</option>', $type, $selected, $type);
+	}
+	?>
+	</select>
+	<br/>
+	<?php if($this->edited): ?>
+	<div id="user-comands">
+		<a href="<?php echo $this->url(array(), 'userChangePass', true); ?>">сменить пароль от аккаунта</a>
+		<a href="<?php echo $this->url(array(), 'userChangeGamePass', true); ?>">сменить пароль от игры</a>
+		<a href="<?php echo $this->url(array(), 'userAddPlayer', true); ?>">добавить игрока</a>
+	</div>
+	<?php endif; ?>
+</div>
+<div id="player">
+	<h1 style="margin-left: 21px;">Игроки</h1>
+	<?php foreach($this->players as $player): ?>
+		<div id="player-block" class="js-player" idPlayer="<?php echo $player->id; ?>">
+			<p>
+				<span class="emph">мир: </span>
+				<?php echo $this->escape($player->pattern); ?>
+			</p>
+			<p>
+				<span class="emph">интервал проверок: </span>
+				<?php
+				$disabled = ($this->edited) ? '' : 'disabled="disabled"';
+				printf("<select class='js-change-interval-check' %s>", $disabled);
+				for( $i=$this->checkInterval['min']; $i<=$this->checkInterval['max']; $i++) {
+					$selected = ($i === intval($player->check_interval)) ? 'selected="selected"' : '';
+					printf('<option value="%d" %s>%d</option>', $i, $selected, $i);
+				}
+				echo '</select>';
+				?>
+			</p>
+			<p>
+				<span class="emph">интервал оповещения: </span>
+				<?php
+				$disabled = ($this->edited) ? '' : 'disabled="disabled"';
+				printf("<select class='js-change-notify-interval' %s>", $disabled);
+				for( $i=$this->checkInterval['min']; $i<=$this->checkInterval['max']; $i++) {
+					$selected = ($i === intval($player->notify_hours)) ? 'selected="selected"' : '';
+					printf('<option value="%d" %s>%d</option>', $i, $selected, $i);
+				}
+				echo '</select>';
+				?>
+			</p>
+			<p>
+				<span class="emph">мониторинг: </span>
+				<?php
+				$checked = (intval($player->enable_monitor)) ? 'checked="checked"' : '';
+				$disabled = ($this->edited && $this->avaliableMonitoring) ? '' : 'disabled="disabled"';
+				printf("<input type='checkbox' %s class='js-monitoring-toggle' %s>",$checked, $disabled);
+				?>
+			</p>
+			<p>
+				<span class="emph">оповещения: </span>
+				<?php
+				$checked = (intval($player->enable_notify)) ? 'checked="checked"' : '';
+				$disabled = ($this->edited) ? '' : 'disabled="disabled"';
+				printf("<input type='checkbox' %s class='js-notify-toggle' %s>",$checked, $disabled);
+				?>
+			</p>
+			<p>
+				<span id="soty" class="emph">соты:</span>
+			</p>
+			<div class="relative">
+				<?php
+				$disabled = ($this->edited) ? '' : 'readonly="readonly"';
+				printf('<textarea %s class="js-sots-change  textarea">%s</textarea>',$disabled, $this->escape(str_replace(';;;', "\n", $player->sots)));
+				?>
+				<?php if( $this->edited ): ?>
+				<div id="change-sots-buttons" class="hide js-change-buttons">
+					<a href="" class="js-sots-cancel delete" title="отменить изменения"></a>
+					<a href="" class="js-sots-save ok" title="применить изменения"></a>
+				</div>
+				<?php endif; ?>
+				<textarea class="hide js-sots-cache"></textarea>
+			</div>
+			<?php if($this->edited): ?>
+				<div id="delete-player" class="delete js-player-delete" title="удалить игрока"></div>
+			<?php endif; ?>
+		</div>
+	<?php endforeach; ?>
+</div>
+
+
+

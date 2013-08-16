@@ -1,0 +1,56 @@
+<?php $this->printMessageBlock($this->messType, $this->messText); ?>
+
+<h1>Добавление нового игрока</h1>
+
+<?php if( count($this->worlds) === 0 ): ?>
+	У вас уже добавлены соты во всех доступных для мониторинга мирах.
+<?php else: ?>
+	<form method="POST" name="player_add">
+		<div class="left">
+			<p><span class="emph">Мир: </span></p>
+			<p><span class="emph">Интервал проверки: </span></p>
+			<p><span class="emph">Интервал оповешения: </span></p>
+			<p><span class="emph">Мониторинг: </span></p>
+			<p><span class="emph">Оповещения: </span></p>
+			<p><span id="soty" class="emph">Соты:</span></p>
+		</div>
+		<div id="add-player-pref">
+			<p>
+				<select name="world">
+					<?php
+					foreach( $this->worlds as $world )
+						printf('<option value="%d">%s</option>', $world['id'], $this->escape($world->pattern));
+					?>
+				</select>
+			</p>
+			<p>
+				<select name="intervalcheck">
+					<?php
+					for( $i=$this->checkInterval['min']; $i<=$this->checkInterval['max']; $i++)
+						printf('<option value="%d">%d</option>', $i, $i);
+					?>
+				</select>
+			</p>
+			<p>
+				<select name="intervalnotify">
+					<?php
+					for( $i=$this->checkInterval['min']; $i<=$this->checkInterval['max']; $i++)
+						printf('<option value="%d">%d</option>', $i, $i);
+					?>
+				</select>
+			</p>
+			<p>
+				<input type='checkbox' checked="CHECKED" name="monitoring"/>
+			</p>
+			<p>
+				<input type='checkbox' checked="CHECKED" name="notify"/>
+			</p>
+		</div>
+
+
+		<p class="clear">
+			<textarea id="add-player-textarea" name="sots" placeholder="Введите названия сот для мониторинга по одной на каждой строке или через пробел"></textarea>
+		</p>
+		<input type="submit" value="Добавить" name="Добавить"/>
+	</form>
+<?php endif; ?>

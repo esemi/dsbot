@@ -1,0 +1,4 @@
+/app/configs/config.secure.ini
+/cron/config_secure.py
+*.pyc
+.idea/

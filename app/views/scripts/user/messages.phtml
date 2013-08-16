@@ -1,0 +1,24 @@
+<?php
+$cycle = $this->cycle(array( 'odd', 'even' ));
+?>
+
+<h1>Отправленные сообщения</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>Дата</th>
+			<th>Адресат</th>
+			<th>Текст</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach($this->messages as $item): ?>
+			<tr class="<?php echo $cycle->next(); ?>">
+				<td class="data"><?php echo $item['custom_date']; ?></td>
+				<td><?php echo $this->escape($item['to']); ?></td>
+				<td><?php echo $item['message']; ?></td>
+			</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>

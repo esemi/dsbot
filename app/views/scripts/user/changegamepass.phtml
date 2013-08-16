@@ -1,0 +1,20 @@
+<h1>изменение пароля от игры</h1>
+
+<?php $this->printMessageBlock($this->messType, $this->messText); ?>
+
+<form name="changepass" action="" method="post">
+     <table class="inline-look">
+            <tbody>
+                <tr>
+                    <td><label for="accpass">Текущий пароль от аккаунта: </label></td>
+                    <td><input name="accpass" id="accpass" placeholder="Введите текущий пароль от аккаунта" type="password" maxlength="50" /></td>
+                </tr>
+                <tr>
+                    <td><label for="gamepass">Новый пароль от игры: </label></td>
+                    <td><input name="gamepass" id="gamepass" type="password" placeholder="Введите новый пароль от игры" maxlength="50" />   </td>
+                </tr>
+            </tbody>
+     </table>
+
+    <input type="submit"  value="применить" />
+</form>

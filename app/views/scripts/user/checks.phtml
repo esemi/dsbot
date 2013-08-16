@@ -1,0 +1,26 @@
+<?php
+$cycle = $this->cycle(array( 'odd', 'even' ));
+?>
+
+<h1>История проверок</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Мир</th>
+            <th>Время</th>
+            <th>Статус</th>
+            <th>Попытки</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->messages as $item): ?>
+            <tr class="<?php echo $cycle->next(); ?>">
+                <td><?php echo $item['pattern']; ?></td>
+                <td class="data"><?php echo $item['custom_date']; ?></td>
+                <td><?php echo $this->printCheckStatus($item['status']); ?></td>
+                <td><?php echo $item['try_count']; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

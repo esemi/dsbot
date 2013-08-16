@@ -1,0 +1,357 @@
+<?php
+
+/*
+ * контроллер основного меню (по мирам)
+ */
+
+class WorldController extends Zend_Controller_Action
+{
+
+    protected $idW = null;
+    protected $_worlds = null;
+    protected $_alliances = null;
+    protected $_players = null;
+    protected $_statGen = null;
+    protected $_cacheUP = null;
+
+    public function init()
+    {
+        $this->_worlds = new Application_Model_DbTable_Worlds();
+
+        $this->_cacheUP = Zend_Registry::get('upCoreMem');
+
+        if( $this->_worlds->validate((int) $this->_getParam('idW')) !== true ) {
+            $this->_redirect($this->view->url(array( ), 'index'));
+            die();
+        }
+
+        $this->view->idWorld = $this->idW = (int) $this->_getParam('idW');
+
+        $this->view->title = $this->_worlds->getName($this->idW);
+        $this->view->actTitle = '';
+
+        if( !$this->view->listWorlds = $this->_cacheUP->load('world_list') ) {
+            $this->view->listWorlds = $this->_worlds->listing();
+            $this->_cacheUP->save($this->view->listWorlds, 'world_list');
+        }
+    }
+
+    /*
+     * вывод общей инфы по конкретному миру
+     */
+    public function indexAction()
+    {
+        $this->_players = new Application_Model_DbTable_Players();
+
+        $data = $this->_worlds->getCurProperty($this->idW);
+
+        if( $data == false )
+            throw new Exception('World property not found');
+
+        $this->prepareWorldProperty($data);
+        $this->view->dataWorld = $data;
+        $this->view->actTitle = 'Главная';
+
+        list($begin, $end) = MyUtils::getTimeBorders();
+
+        $this->view->input = $this->_players->getInput($this->idW, $begin, $end);
+        $this->view->output = $this->_players->getOutput($this->idW, $begin, $end);
+        $this->view->transGate = $this->_players->getTransGate($this->idW, $begin, $end);
+        $this->view->transDom = $this->_players->getTransDom($this->idW, $begin, $end);
+        $this->view->transAlliance = $this->_players->getTransAlliance($this->idW, $begin, $end);
+    }
+
+    /*
+     * История изменений параметров игроков мира по дням
+     * (пришли/ушли/перешлиАльянсы/переехалиДом/переехалиКолония)
+     * date - отступ в днях от текущего. от нуля до maxOffset (config)
+     */
+    public function historyAction()
+    {
+        $this->_players = new Application_Model_DbTable_Players();
+
+        $offset = (int) $this->_getParam('date');
+        $maxOffset = $this->getFrontController()->getParam('bootstrap')->getOption('maxOffset');
+
+        if( $offset < 0 || $offset > $maxOffset ) {
+            $this->_redirect($this->view->url(array( 'idW' => $this->idW, 'date' => 0 ), 'worldHistory'));
+            die();
+        }
+
+        list($begin, $end) = MyUtils::getTimeBorders($offset);
+
+        $this->view->offset = $offset;
+        $this->view->date = $begin;
+        $this->view->actTitle = 'История изменений';
+
+        $this->view->input = $this->_players->getInput($this->idW, $begin, $end, true);
+        $this->view->output = $this->_players->getOutput($this->idW, $begin, $end, true);
+        $this->view->transGate = $this->_players->getTransGate($this->idW, $begin, $end, true);
+        $this->view->transDom = $this->_players->getTransDom($this->idW, $begin, $end, true);
+        $this->view->transAlliance = $this->_players->getTransAlliance($this->idW, $begin, $end, true);
+    }
+
+    /*
+     * вывод карты мира 
+     */
+    public function mapAction()
+    {
+        $this->view->actTitle = 'Карта колец';
+    }
+
+    /*
+     * вывод статистики по миру
+     * graph - номер графика в меню, по умолчанию ноль
+     */
+    public function statAction()
+    {
+        $this->_statGen = new Application_Model_DbTable_StatGeneral();
+
+        $idG = (int) $this->_getParam('graph');
+        $menu = $this->getGraphMenu();
+
+        if( !isset($menu[$idG]) ) {
+            $this->_redirect($this->view->url(array( 'idW' => $this->idW ), 'worldIndex'));
+            die();
+        }
+
+        $this->view->actTitle = 'Статистика : ' . $menu[$idG]['name'];
+        $this->view->idGraph = $idG;
+        $this->view->menuGraph = $menu;
+        $this->view->optGraph = $menu[$idG];
+
+        switch ($menu[$idG]['index'])
+        {
+            case 'InOutDay':
+                $this->view->data = $this->_statGen->getLastIO($this->idW);
+                break;
+            case 'InOutAll':
+                $this->view->data = $this->_statGen->getAllIO($this->idW);
+                break;
+            case 'countP':
+                $this->view->data = $this->_statGen->getCountPlayers($this->idW);
+                break;
+            case 'countC':
+                $this->view->data = $this->_statGen->getCountColonies($this->idW);
+                break;
+            case 'countA':
+                $this->view->data = $this->_statGen->getCountAlliances($this->idW);
+                break;
+            case 'rankSum':
+                $this->view->data = $this->_statGen->getSumRank($this->idW);
+                break;
+            case 'rankAvg':
+                $this->view->data = $this->_statGen->getAvgRank($this->idW);
+                break;
+            case 'boSum':
+                $this->view->data = $this->_statGen->getSumBO($this->idW);
+                break;
+            case 'boAvg':
+                $this->view->data = $this->_statGen->getAvgBO($this->idW);
+                break;
+        }
+
+        //сокращалка на "кк"
+        if( is_null($this->view->optGraph['reduce']) ) {
+            $reduce = MyUtils::getReduce($this->view->data);
+
+            if( $reduce != 0 )
+                array_walk_recursive($this->view->data, 'MyUtils::conversionReduce', $reduce);
+
+            $this->view->optGraph['reduce'] = $reduce;
+        }
+    }
+
+    /*
+     * листинг игроков мира
+     */
+    public function playersAction()
+    {
+        $page = (int) $this->_getParam('page', 1);
+        $this->view->actTitle = "Список игроков, страница {$page}";
+
+        $this->_players = new Application_Model_DbTable_Players();
+
+        $count = $this->_worlds->getPlayersCount($this->idW);
+        $this->view->paginator = $this->_players->listWorldPlayers($this->idW, $page, $count);
+    }
+
+    /*
+     * листинг алов мира
+     */
+    public function alliancesAction()
+    {
+        $page = (int) $this->_getParam('page', 1);
+        $this->view->actTitle = "Список альянсов, страница {$page}";
+
+        $this->_alliances = new Application_Model_DbTable_Alliances();
+
+        $count = $this->_worlds->getAllianceCount($this->idW);
+        $this->view->paginator = $this->_alliances->listWorldAlliances($this->idW, $page, $count);
+    }
+
+    /*
+     * форма поиска кормух
+     *
+      public function searchAction()
+      {
+      }
+
+
+      /*
+     * инфа о ежемесячных итогах развития мира
+     *
+      public function resumeAction()
+      {
+      }
+     */
+
+
+
+    /*
+     * формируем текущие свойства мира void
+     */
+    protected function prepareWorldProperty( &$data )
+    {
+        //приводим строки к числам
+        $colums = array( 'compls_voran', 'compls_liens', 'compls_psol', 'compls_mels',
+            'count_voran', 'count_liens', 'count_psol',
+            'rank_voran', 'rank_liens', 'rank_psol',
+            'bo_voran', 'bo_liens', 'bo_psol',
+            'nra_voran', 'nra_liens', 'nra_psol',
+            'ra_voran', 'ra_liens', 'ra_psol',
+            'count_colony', 'count_alliance',
+            'avg_level_voran', 'avg_level_liens', 'avg_level_psol',
+            'archeology_voran', 'archeology_liens', 'archeology_psol',
+            'building_voran', 'building_liens', 'building_psol',
+            'science_voran', 'science_liens', 'science_psol' );
+        $data = MyUtils::str2intArr($data, $colums);
+
+        //преобразуем тип
+        $data['type'] = ($data['type'] == 'KK') ? 'КпК' : 'РпР';
+
+        //количество игроков
+        $data['count'] = $data['count_voran'] + $data['count_liens'] + $data['count_psol'];
+
+        //общий рейтинг
+        $data['sum_rank'] = $data['rank_voran'] + $data['rank_liens'] + $data['rank_psol'];
+        //средний рейтинг
+        $data['avg_rank'] = round($data['sum_rank'] / $data['count']);
+        $data['avg_rank_voran'] = round($data['rank_voran'] / $data['count_voran']);
+        $data['avg_rank_liens'] = round($data['rank_liens'] / $data['count_liens']);
+        $data['avg_rank_psol'] = round($data['rank_psol'] / $data['count_psol']);
+
+        //общий бо
+        $data['sum_bo'] = $data['bo_voran'] + $data['bo_liens'] + $data['bo_psol'];
+        //средний бо
+        $data['avg_bo'] = round($data['sum_bo'] / $data['count']);
+        $data['avg_bo_voran'] = round($data['bo_voran'] / $data['count_voran']);
+        $data['avg_bo_liens'] = round($data['bo_liens'] / $data['count_liens']);
+        $data['avg_bo_psol'] = round($data['bo_psol'] / $data['count_psol']);
+
+        //общий нра
+        $data['sum_nra'] = $data['nra_voran'] + $data['nra_liens'] + $data['nra_psol'];
+        //средний нра
+        $data['avg_nra'] = round($data['sum_nra'] / $data['count']);
+        $data['avg_nra_voran'] = round($data['nra_voran'] / $data['count_voran']);
+        $data['avg_nra_liens'] = round($data['nra_liens'] / $data['count_liens']);
+        $data['avg_nra_psol'] = round($data['nra_psol'] / $data['count_psol']);
+
+        //общий ра
+        $data['sum_ra'] = $data['ra_voran'] + $data['ra_liens'] + $data['ra_psol'];
+        //средний ра
+        $data['avg_ra'] = round($data['sum_ra'] / $data['count']);
+        $data['avg_ra_voran'] = round($data['ra_voran'] / $data['count_voran']);
+        $data['avg_ra_liens'] = round($data['ra_liens'] / $data['count_liens']);
+        $data['avg_ra_psol'] = round($data['ra_psol'] / $data['count_psol']);
+
+        //заселённость колец
+        $data['people_voran'] = round($data['count_voran'] / ($data['compls_voran'] * 6) * 100, 1);
+        $data['people_liens'] = round($data['count_liens'] / ($data['compls_liens'] * 6) * 100, 1);
+        $data['people_psol'] = round($data['count_psol'] / ($data['compls_psol'] * 6) * 100, 1);
+        $data['people_mels'] = round($data['count_colony'] / ($data['compls_mels'] * 6) * 100, 1);
+
+        //общая археология
+        $data['sum_arch'] = $data['archeology_voran'] + $data['archeology_liens'] + $data['archeology_psol'];
+        //средняя археология
+        $data['avg_arch'] = round($data['sum_arch'] / $data['count']);
+        $data['avg_arch_voran'] = round($data['archeology_voran'] / $data['count_voran']);
+        $data['avg_arch_liens'] = round($data['archeology_liens'] / $data['count_liens']);
+        $data['avg_arch_psol'] = round($data['archeology_psol'] / $data['count_psol']);
+
+
+        //приводим большщие числа к читабельному виду 1`234`567
+        $colums = array(
+            'sum_rank', 'sum_bo', 'sum_ra', 'avg_rank',
+            'rank_voran', 'rank_liens', 'rank_psol',
+            'avg_rank_voran', 'avg_rank_liens', 'avg_rank_psol',
+            'bo_voran', 'bo_liens', 'bo_psol',
+            'ra_voran', 'ra_liens', 'ra_psol',
+            'sum_arch','sum_build','sum_scien',
+            'avg_arch','avg_build','avg_scien',
+            'archeology_voran', 'archeology_liens', 'archeology_psol',
+            'building_voran', 'building_liens', 'building_psol',
+            'science_voran', 'science_liens', 'science_psol' );
+        $data = MyUtils::int2formatArr($data, $colums);
+    }
+
+    /*
+     * формируем массив графиков
+     */
+    protected function getGraphMenu()
+    {
+        return array(
+            array(
+                'index' => 'InOutDay',
+                'name' => 'Пришли/ушли за месяц',
+                'type' => 'bar', 'reduce' => 0, 'count' => 2, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( 'Пришли', 'Ушли' ) ),
+            array(
+                'index' => 'InOutAll',
+                'name' => 'Пришли/ушли за всё время',
+                'type' => 'bar', 'reduce' => 0, 'count' => 2, 'dateFormat' => '%m.%Y',
+                'series' => array( 'Пришли', 'Ушли' ) ),
+            array(
+                'index' => 'countP',
+                'name' => 'Количество игроков',
+                'type' => 'line', 'reduce' => 0, 'count' => 4, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( 'Всего', 'Воранеры', 'Лиенсу', 'Псолао' ) ),
+            array(
+                'index' => 'countC',
+                'name' => 'Количество колоний',
+                'type' => 'line', 'reduce' => 0, 'count' => 1, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( ) ),
+            array(
+                'index' => 'countA',
+                'name' => 'Количество альянсов',
+                'type' => 'line', 'reduce' => 0, 'count' => 1, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( ) ),
+            array(
+                'index' => 'rankSum',
+                'name' => 'Общий рейтинг',
+                'type' => 'line', 'reduce' => null, 'count' => 4, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( 'Всего', 'Воранеры', 'Лиенсу', 'Псолао' ) ),
+            array(
+                'index' => 'rankAvg',
+                'name' => 'Средний рейтинг',
+                'type' => 'line', 'reduce' => null, 'count' => 4, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( 'Всего', 'Воранеры', 'Лиенсу', 'Псолао' ) ),
+            array(
+                'index' => 'boSum',
+                'name' => 'Общий БО',
+                'type' => 'line', 'reduce' => null, 'count' => 4, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( 'Всего', 'Воранеры', 'Лиенсу', 'Псолао' ) ),
+            array(
+                'index' => 'boAvg',
+                'name' => 'Средний БО',
+                'type' => 'line', 'reduce' => 0, 'count' => 4, 'dateFormat' => '%d.%m.%Y',
+                'series' => array( 'Всего', 'Воранеры', 'Лиенсу', 'Псолао' ) ),
+        /*
+          array( 'name' => 'Общий НРА',          'type' => 'line', 'count' => 4),
+          array( 'name' => 'Средний НРА',        'type' => 'line', 'count' => 4),
+          array( 'name' => 'Общий РА',           'type' => 'line', 'count' => 4),
+          array( 'name' => 'Средний РА',         'type' => 'line', 'count' => 4), */
+        );
+    }
+
+}

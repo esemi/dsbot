@@ -1,0 +1,21 @@
+<div class="mrg-left-157">
+    <h1>произошла ошибка</h1>
+    <p>Не расстраивайтесь - мы уже в курсе.</p>
+          
+    <?php if (isset($this->exceptionMessage)): ?>
+        <p class="mrg-left-21">
+          <?php echo $this->exceptionMessage ?>
+        </p>
+    <?php endif ?>
+        
+    <?php if (isset($this->exception)): ?>    
+        <h3 class="subtitle mrg-left-13">Stack trace:</h3>
+        <pre>
+            <?php echo $this->exception->getTraceAsString() ?>
+        </pre>
+        <h3>Request Parameters:</h3>
+        <pre>
+            <?php echo var_export($this->request->getParams(), true) ?>
+        </pre>
+    <?php endif ?>
+</div>

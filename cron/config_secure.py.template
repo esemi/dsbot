@@ -1,0 +1,14 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+__author__ = 'esemi'
+
+GAME_PASS_KEY = '123456'
+DB_USER = 'username'
+DB_PASS = 'pass'
+PROXY_USER = "user"
+PROXY_PASS = "pass"
+SMS_USER = 'user'
+SMS_PASS = 'pass'
+SMTP_LOGIN = "email"
+SMTP_PWD = "pass"

@@ -1,0 +1,24 @@
+<h1>изменение пароля от аккаунта</h1>
+
+<?php $this->printMessageBlock($this->messType, $this->messText); ?>
+
+<form  name="changepass" action="" method="post">
+    <table class="inline-look">
+            <tbody>
+                <tr>
+                    <td><label for="oldpass">Текущий пароль: </label></td>
+                    <td><input name="oldpass" id="oldpass" placeholder="Введите текущий пароль" type="password" maxlength="50" /></td>
+                </tr>
+                <tr>
+                    <td><label for="newpass">Новый пароль: </label></td>
+                    <td><input name="newpass" id="newpass" type="password" placeholder="Введите новый пароль" maxlength="50" /></td>
+                </tr>
+                <tr>
+                    <td><label for="retrypass">Еще раз: </label></td>
+                    <td><input name="retrypass" id="retrypass" type="password" placeholder="Повторите новый пароль" maxlength="50" /></td>
+                </tr>
+            </tbody>
+    </table>
+
+    <input type="submit"  value="применить" />
+</form>

@@ -1,0 +1,24 @@
+<?php
+$cycle = $this->cycle(array( 'odd', 'even' ));
+?>
+
+<h1>История расходов</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Списание (руб.)</th>
+            <th>Дата</th>
+            <th>Назначение</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->amounts as $item): ?>
+            <tr class="<?php echo $cycle->next(); ?>">
+                <td><?php printf('%.2f', $item['amount']); ?></td>
+                <td class="data"><?php echo $item['custom_date']; ?></td>
+                <td><?php echo $item['type']; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

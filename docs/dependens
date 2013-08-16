@@ -1,0 +1,4 @@
+PyQt4 >= 4.8 !!!
+PyQt4.webkit
+python >= 2.7
+flashPlayer.so on mozilla paths

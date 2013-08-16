@@ -1,0 +1,34 @@
+<h1 class="left">Регистрация</h1>
+
+<?php $this->printMessageBlock($this->messType, $this->messText); ?>
+
+<form class="clear" name="regform" action="" method="post">
+	<table class="inline-look">
+		<tbody>
+			<tr>
+				<td><label for="login">Игровой логин: </label></td>
+				<td><input name="login" id="login" placeholder="Игровой логин" type="text" value="<?php echo $this->escape($this->post['login']); ?>" maxlength="50"/></td>
+			</tr>
+			<tr>
+				<td><label for="pass">Пароль: </label></td>
+				<td><input name="pass" id="pass" type="password" placeholder="Пароль от личного кабинета"/></td>
+			</tr>
+			<tr>
+				<td><label for="game_pass">Пароль от игры: </label></td>
+				<td><input name="game_pass" id="game_pass" type="password" placeholder="Пароль от игры" maxlength="50"/></td>
+			</tr>
+			<tr>
+				<td><label for="phone">Телефон: </label></td>
+				<td><input name="phone" id="phone" type="text" placeholder="Номер мобильного" maxlength="20" value="<?php echo $this->escape($this->post['phone']); ?>"/></td>
+			</tr>
+			<tr>
+				<td><label for="email">Email: </label></td>
+				<td><input name="email" id="email" type="email" placeholder="Почтовый адрес" maxlength="255" value="<?php echo $this->escape($this->post['email']); ?>"/></td>
+			</tr>
+		</tbody>
+	</table>
+	<div style="margin-bottom: 15px; margin-top: 10px; width: 400px;">
+		<?php echo $this->recaptcha->getHTML(); ?>
+	</div>
+	<input type="submit" value="Регистрация" />
+</form>

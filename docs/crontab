@@ -1,0 +1,11 @@
+MAILTO=""
+
+30 04 * * * /home/esemi/cron/backup_dsbot.sh >> /dev/null
+
+*/15 * * * * python /home/esemi/dsbot/cron/sheduler.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1
+*/6 * * * * python /home/esemi/dsbot/cron/sender.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1
+* * * * * python /home/esemi/dsbot/cron/run_check.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1
+20 00 * * * python /home/esemi/dsbot/cron/proxy_update.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1
+10 00 * * * python /home/esemi/dsbot/cron/proxy_checker.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1
+00 00 * * * python /home/esemi/dsbot/cron/proxy_billing.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1
+*/10 * * * * python /home/esemi/dsbot/cron/notify_billing.py >> /home/esemi/logs/dsbot/cron/other.log 2>&1

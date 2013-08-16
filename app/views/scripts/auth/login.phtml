@@ -1,0 +1,24 @@
+<h1 class="left">Вход в личный кабинет</h1>
+
+<?php $this->printMessageBlock($this->messType, $this->messText); ?>
+
+<form class="clear" name="loginform" action="" method="post">
+	<table class="inline-look">
+		<tbody>
+			<tr>
+				<td><label for="login">Логин: </label></td>
+				<td><input name="login" id="login" placeholder="Введите логин" type="text" value="<?php echo $this->escape($this->login); ?>" maxlength="50"  /></td>
+			</tr>
+			<tr>
+				<td><label for="pass">Пароль: </label></td>
+				<td><input name="pass" id="pass" type="password" placeholder="Введите пароль" maxlength="50" /></td>
+			</tr>
+		</tbody>
+	</table>
+	<input type="submit" value="Вход" />
+</form>
+
+
+<a href="<?php echo $this->url(array(),'staticDemoLogin',true); ?>">Демо вход</a>
+
+
