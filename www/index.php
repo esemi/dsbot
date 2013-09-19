@@ -1,7 +1,6 @@
 <?php
 
-define('APPLICATION_ENV',( trim(`hostname`) == 'vm10420.majordomo.ru')
-        ? 'production' : 'development');
+define('APPLICATION_ENV', (getenv('APPLICATION_ENV')) ? getenv('APPLICATION_ENV') : 'production');
 
 define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../app'));
 
@@ -10,8 +9,8 @@ define('ZEND_PATH', realpath(dirname(__FILE__) . '/../../Zend'));
 define('LOG_PATH', realpath(dirname(__FILE__) . '/../../logs/dsbot'));
 
 set_include_path(implode(PATH_SEPARATOR, array(
-    ZEND_PATH,
-    get_include_path()
+	ZEND_PATH,
+	get_include_path()
 )));
 
 require_once 'Zend/Application.php';
