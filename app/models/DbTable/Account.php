@@ -86,7 +86,7 @@ class App_Model_DbTable_Account extends Zend_Db_Table_Abstract
 		if( $tmp !== true )
 			return $tmp;
 
-		return true;
+		return 'Регистрация на данный момент только по инвайтам';
 	}
 
 	private function _validateRequireParams($post)
