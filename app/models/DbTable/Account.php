@@ -54,15 +54,10 @@ class App_Model_DbTable_Account extends Zend_Db_Table_Abstract
 		);
 	}
 
-	public function validateNewAccount($data, $captcha)
+	public function validateNewAccount($data)
 	{
 		//обязательные параметры
 		$tmp = $this->_validateRequireParams($data);
-		if( $tmp !== true )
-			return $tmp;
-
-		//каптча
-		$tmp = $this->_validateCaptcha($captcha, $data['recaptcha_challenge_field'], $data['recaptcha_response_field']);
 		if( $tmp !== true )
 			return $tmp;
 
@@ -97,8 +92,6 @@ class App_Model_DbTable_Account extends Zend_Db_Table_Abstract
 	private function _validateRequireParams($post)
 	{
 		$params = array(
-			'recaptcha_challenge_field',
-			'recaptcha_response_field',
 			'login',
 			'pass',
 			'email',
@@ -117,18 +110,6 @@ class App_Model_DbTable_Account extends Zend_Db_Table_Abstract
 	{
 		if( !preg_match('/^[\w]{3,50}$/', $login) )
 			return 'Некорректный логин';
-
-		return true;
-	}
-
-	private function _validateCaptcha($captcha, $f1, $f2)
-	{
-		$captchaRes = $captcha->verify(
-				empty($f1) ? 'fail':$f1,
-				empty($f2) ? 'fail':$f2
-			);
-		if( !$captchaRes->isValid() )
-			return 'Текст с изображения введён неверно';
 
 		return true;
 	}

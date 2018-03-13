@@ -122,13 +122,10 @@ class AuthController extends Zend_Controller_Action
 			$this->_helper->redirector->gotoRoute(array(), 'userProfile');
 		}
 
-		$conf = $this->getFrontController()->getParam('bootstrap')->getOption('recaptcha');
-		$this->view->recaptcha = $recaptcha = new Zend_Service_ReCaptcha($conf['pubkey'],$conf['privkey']);
-
 		if( $this->_request->isPost() )
 		{
 			$this->view->post = $post = $this->_request->getPost();
-			$result = $this->_helper->modelLoad('Account')->validateNewAccount($post, $recaptcha);
+			$result = $this->_helper->modelLoad('Account')->validateNewAccount($post);
 
 			if( $result === true )
 			{
