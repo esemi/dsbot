@@ -6,7 +6,7 @@ define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../app'));
 
 define('ZEND_PATH', realpath(dirname(__FILE__) . '/../../Zend'));
 
-define('LOG_PATH', realpath(dirname(__FILE__) . '/../../logs/dsbot'));
+define('LOG_PATH', realpath(dirname(__FILE__) . '/../logs'));
 
 set_include_path(implode(PATH_SEPARATOR, array(
 	ZEND_PATH,
