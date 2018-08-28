@@ -1,2 +1,2 @@
 PyQt4>=4.8.0
-Fabric3
+Fabric3==1.14.post1
